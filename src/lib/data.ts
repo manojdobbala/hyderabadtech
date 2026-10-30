@@ -269,3 +269,49 @@ export function matches(tags: PillId[], search: string, filters: Filters) {
 
 export const intents = ["Building", "Hiring", "Remote", "Designing"] as const;
 export type Intent = (typeof intents)[number];
+
+export type NoticeKind = "funding" | "workspace" | "update";
+
+export type Notice = {
+  id: string;
+  kind: NoticeKind;
+  title: string;
+  detail: string;
+  meta: string;
+  tab: TabId;
+};
+
+export const notices: Notice[] = [
+  {
+    id: "fluxlane-round",
+    kind: "funding",
+    title: "Fluxlane closes ₹48 Cr",
+    detail: "Series A for on-device inference, led out of Gachibowli.",
+    meta: "2h",
+    tab: "feed",
+  },
+  {
+    id: "orbit-seat",
+    kind: "workspace",
+    title: "1 desk left at Orbit",
+    detail: "The Gachibowli day pass is down to a single seat.",
+    meta: "18m",
+    tab: "places",
+  },
+  {
+    id: "next-hyd",
+    kind: "update",
+    title: "Next.js Hyd is tonight",
+    detail: "T-Hub at 7:30. 180 people are already in.",
+    meta: "Today",
+    tab: "feed",
+  },
+  {
+    id: "skyview-open",
+    kind: "workspace",
+    title: "Skyview still has room",
+    detail: "2 desks left in Financial District, on 300 Mbps.",
+    meta: "34m",
+    tab: "places",
+  },
+];

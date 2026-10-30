@@ -7,6 +7,7 @@ import {
   desks,
   matches,
   pills,
+  notices,
   pulse,
   talents,
   type Intent,
@@ -15,7 +16,7 @@ import {
   type Talent,
 } from "@/lib/data";
 import { BottomNav } from "@/components/bottom-nav";
-import { ConnectSheet, JoinSheet, ProfileSheet } from "@/components/drawers";
+import { ConnectSheet, JoinSheet, NoticesSheet, ProfileSheet } from "@/components/drawers";
 import { Header } from "@/components/header";
 import { Omnisearch } from "@/components/omnisearch";
 import { TalentShowcase } from "@/components/talent-showcase";
@@ -54,6 +55,8 @@ export function AppShell() {
   const [focused, setFocused] = useState(false);
   const [joinOpen, setJoinOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [noticesOpen, setNoticesOpen] = useState(false);
+  const [readNotices, setReadNotices] = useState<Record<string, boolean>>({});
   const [talent, setTalent] = useState<Talent | null>(null);
   const [booked, setBooked] = useState<Record<string, boolean>>({});
   const [joined, setJoined] = useState<{ name: string; intent: Intent } | null>(null);
@@ -79,9 +82,19 @@ export function AppShell() {
 
   const copy = headlines[tab];
 
+  const unread = notices.filter((notice) => !readNotices[notice.id]).length;
+
+  function closeOverlays() {
+    setJoinOpen(false);
+    setProfileOpen(false);
+    setTalent(null);
+    setNoticesOpen(false);
+  }
+
   function openJoin() {
     setProfileOpen(false);
     setTalent(null);
+    setNoticesOpen(false);
     setJoinOpen(true);
   }
 
@@ -102,10 +115,23 @@ export function AppShell() {
 
           <div ref={scrollerRef} className="scroller relative z-10 h-full overflow-y-auto">
             <Header
+              unread={unread}
+              noticesOpen={noticesOpen}
               onProfile={() => {
                 setJoinOpen(false);
                 setTalent(null);
+                setNoticesOpen(false);
                 setProfileOpen(true);
+              }}
+              onNotices={() => {
+                if (noticesOpen) {
+                  setNoticesOpen(false);
+                  return;
+                }
+                setJoinOpen(false);
+                setProfileOpen(false);
+                setTalent(null);
+                setNoticesOpen(true);
               }}
             />
             <main className="px-4 pt-5 pb-32">
@@ -195,9 +221,7 @@ export function AppShell() {
             tab={tab}
             joinOpen={joinOpen}
             onTab={(next) => {
-              setJoinOpen(false);
-              setProfileOpen(false);
-              setTalent(null);
+              closeOverlays();
               setTab(next);
             }}
             onJoin={() => {
@@ -221,6 +245,19 @@ export function AppShell() {
             joined={joined}
             onClose={() => setProfileOpen(false)}
             onJoin={openJoin}
+          />
+          <NoticesSheet
+            open={noticesOpen}
+            read={readNotices}
+            onClose={() => setNoticesOpen(false)}
+            onReadAll={() =>
+              setReadNotices(Object.fromEntries(notices.map((notice) => [notice.id, true])))
+            }
+            onOpen={(notice) => {
+              setReadNotices((current) => ({ ...current, [notice.id]: true }));
+              setNoticesOpen(false);
+              setTab(notice.tab);
+            }}
           />
         </div>
       </div>

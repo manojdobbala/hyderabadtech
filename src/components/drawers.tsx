@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, Send } from "lucide-react";
+import { Banknote, Building, Check, Radio, Send } from "lucide-react";
 import Image from "next/image";
-import { intents, type Intent, type Talent } from "@/lib/data";
+import { intents, notices, type Intent, type Notice, type Talent } from "@/lib/data";
 import { MagneticButton } from "@/components/magnetic-button";
 import { Sheet } from "@/components/sheet";
 import { WorkPreview } from "@/components/talent-showcase";
@@ -202,6 +202,88 @@ export function ProfileSheet({
           </MagneticButton>
         </div>
       )}
+    </Sheet>
+  );
+}
+
+const noticeMeta = {
+  funding: { label: "Funding", icon: Banknote, tone: "bg-cyber/15 text-cyber" },
+  workspace: { label: "Workspace", icon: Building, tone: "bg-ion/15 text-ion" },
+  update: { label: "Update", icon: Radio, tone: "bg-volt/20 text-volt" },
+} as const;
+
+export function NoticesSheet({
+  open,
+  read,
+  onClose,
+  onOpen,
+  onReadAll,
+}: {
+  open: boolean;
+  read: Record<string, boolean>;
+  onClose: () => void;
+  onOpen: (notice: Notice) => void;
+  onReadAll: () => void;
+}) {
+  const unread = notices.filter((notice) => !read[notice.id]).length;
+
+  return (
+    <Sheet open={open} onClose={onClose} title="Notices">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <p className="text-[14px] leading-5 text-white/55">
+          Funding, open desks, and corridor updates.
+        </p>
+        {unread > 0 ? (
+          <button
+            type="button"
+            onClick={onReadAll}
+            className="shrink-0 text-[13px] font-medium text-cyber"
+          >
+            Mark all read
+          </button>
+        ) : null}
+      </div>
+      <ul className="space-y-2">
+        {notices.map((notice) => {
+          const meta = noticeMeta[notice.kind];
+          const Icon = meta.icon;
+          const seen = Boolean(read[notice.id]);
+
+          return (
+            <li key={notice.id}>
+              <button
+                type="button"
+                onClick={() => onOpen(notice)}
+                className={cn(
+                  "flex w-full items-start gap-3 rounded-2xl px-3 py-3 text-left ring-1",
+                  seen ? "bg-white/[0.03] ring-white/8" : "bg-white/[0.06] ring-white/12",
+                )}
+              >
+                <span className={cn("grid size-10 shrink-0 place-items-center rounded-xl", meta.tone)}>
+                  <Icon className="size-4" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-center justify-between gap-3">
+                    <span className="text-[10px] font-semibold tracking-[0.16em] text-white/40 uppercase">
+                      {meta.label}
+                    </span>
+                    <span className="text-[11px] text-white/40">{notice.meta}</span>
+                  </span>
+                  <span className="mt-1 block text-[15px] font-semibold tracking-tight">
+                    {notice.title}
+                  </span>
+                  <span className="mt-0.5 block text-[13px] leading-5 text-white/58">
+                    {notice.detail}
+                  </span>
+                </span>
+                {seen ? null : (
+                  <span className="mt-1 size-2 shrink-0 rounded-full bg-cyber" aria-hidden />
+                )}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
     </Sheet>
   );
 }

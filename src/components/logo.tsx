@@ -2,49 +2,28 @@ export function Logo({ className }: { className?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 512 512"
+      viewBox="0 0 100 100"
       className={className}
       aria-hidden="true"
     >
       <defs>
-        <linearGradient
-          id="hydTechGradient"
-          gradientUnits="userSpaceOnUse"
-          x1="72"
-          y1="110"
-          x2="440"
-          y2="402"
-        >
-          <stop offset="0%" stopColor="#D6FF4A" />
-          <stop offset="48%" stopColor="#3EE0FF" />
-          <stop offset="100%" stopColor="#8B6CFF" />
-        </linearGradient>
-        <filter id="hydTechGlow" x="-35%" y="-35%" width="170%" height="170%">
-          <feGaussianBlur stdDeviation="14" />
-        </filter>
+        <clipPath id="hyd-tech-hole">
+          <ellipse cx="50" cy="50" rx="26" ry="52.5" />
+        </clipPath>
       </defs>
-      <rect width="512" height="512" rx="116" fill="#09090b" />
-      <rect
-        x="12"
-        y="12"
-        width="488"
-        height="488"
-        rx="106"
-        fill="none"
-        stroke="url(#hydTechGradient)"
-        strokeWidth="10"
-        opacity="0.45"
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M0 0H100V100H0Z M24 50A26 52.5 0 1 1 76 50A26 52.5 0 1 1 24 50Z"
       />
-      <g filter="url(#hydTechGlow)" opacity="0.8">
-        <rect x="72" y="110" width="84" height="292" rx="42" fill="url(#hydTechGradient)" />
-        <rect x="356" y="110" width="84" height="292" rx="42" fill="url(#hydTechGradient)" />
-        <rect x="72" y="214" width="368" height="84" rx="42" fill="url(#hydTechGradient)" />
-      </g>
-      <rect x="72" y="110" width="84" height="292" rx="42" fill="url(#hydTechGradient)" />
-      <rect x="356" y="110" width="84" height="292" rx="42" fill="url(#hydTechGradient)" />
-      <rect x="72" y="214" width="368" height="84" rx="42" fill="url(#hydTechGradient)" />
-      <circle cx="256" cy="256" r="40" fill="#09090b" />
-      <circle cx="256" cy="256" r="22" fill="#D6FF4A" />
+      <ellipse
+        cx="50"
+        cy="50"
+        rx="28"
+        ry="14"
+        fill="currentColor"
+        clipPath="url(#hyd-tech-hole)"
+      />
     </svg>
   );
 }
